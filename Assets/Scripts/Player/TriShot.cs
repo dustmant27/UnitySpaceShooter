@@ -9,11 +9,13 @@ public class TriShot : MonoBehaviour
     public bool right = true;
     public AudioClip explosion;
     AudioSource audio;
+    private PolygonCollider2D collision;
     // Use this for initialization
     void Start()
     {
 
         audio = gameObject.GetComponent<AudioSource>();
+        collision = GetComponent<PolygonCollider2D>();
     }
     void OnCollisionEnter2D(Collision2D coll)
     {
@@ -23,6 +25,7 @@ public class TriShot : MonoBehaviour
 
             gameObject.GetComponent<Renderer>().enabled = false;
             Destroy(coll.gameObject);
+            collision.enabled = false;
             Destroy(gameObject, explosion.length);
         }
 

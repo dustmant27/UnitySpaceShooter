@@ -23,6 +23,7 @@ public class PlayerMovement : MonoBehaviour {
     private float respawnTimer = 0;
     bool dead = false;
     private PolygonCollider2D collision;
+public GameObject picture;
     // Use this for initialization
     void Start () {
 
@@ -77,6 +78,7 @@ public class PlayerMovement : MonoBehaviour {
             dead = false;
             collision.enabled = true;
             gameObject.transform.position = respawnPoint;
+            picture.GetComponent<Renderer>().enabled = true;
             gameObject.GetComponent<Renderer>().enabled = true;
         }
         if (Input.GetKey(KeyCode.Escape))
@@ -128,6 +130,7 @@ public class PlayerMovement : MonoBehaviour {
                 collision.enabled = false; 
                 respawnTimer = 3f;
                 upgradeLevel = 0;
+                picture.GetComponent<Renderer>().enabled = false;
                 gameObject.GetComponent<Renderer>().enabled = false;
                 //Destroy(gameObject);
             }
@@ -149,6 +152,7 @@ public class PlayerMovement : MonoBehaviour {
                 collision.enabled = false;
                 respawnTimer = 3f;
                 upgradeLevel = 0;
+               picture.GetComponent<Renderer>().enabled = false;
                 gameObject.GetComponent<Renderer>().enabled = false;
                 
 
