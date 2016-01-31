@@ -14,26 +14,31 @@ public class PlayerMovement : MonoBehaviour {
     public AudioClip pickUp;
     public AudioClip explosion;
     public AudioClip shoot;
-    AudioSource audio;
-    float CurrentTime = 0f;
-    private Rigidbody2D rb;
-    private Vector3 respawnPoint;
-
-    private GameObject basicPlayer;
     public int upgradeLevel = 0;
-    private float respawnTimer = 0;
+public GameObject picture;
+
+
+    AudioSource audio;
+     Rigidbody2D rb;
+     Vector3 respawnPoint;
+
+     GameObject basicPlayer;
+     PolygonCollider2D collision;
+     GameObject gameOver;
+     GameObject normalFace;
+     GameObject hurtFace;
+     GameObject happyFace;
+    Animator animator;
+    Animator thrustAnimator;
+     float maxFaceTimer = 1f;
+     float faceTimer = 0f;
+     float respawnTimer = 0;
     bool dead = false;
     bool fireBoost = false;
-    private PolygonCollider2D collision;
-
-    private GameObject gameOver;
-    private GameObject normalFace;
-    private GameObject hurtFace;
-    private GameObject happyFace;
-
-    private float maxFaceTimer = 1f;
-    private float faceTimer = 0f;
-public GameObject picture;
+    float CurrentTime = 0f;
+    bool rightAnim = false;
+    bool leftAnim = false;
+    bool upAnim = true;
     void Awake()
     {
 
@@ -48,12 +53,15 @@ public GameObject picture;
     }
     // Use this for initialization
     void Start () {
-
+        animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         audio = GetComponent<AudioSource>();
         respawnPoint = gameObject.transform.position;
         basicPlayer = gameObject;
         collision = GetComponent<PolygonCollider2D>();
+        foreach (Transform child in transform)
+            thrustAnimator = child.GetComponent<Animator>();
+        thrustAnimator.SetBool("MoveUp", upAnim);
     }
     public void StartFireSpeedBoost()
     {
@@ -69,26 +77,63 @@ public GameObject picture;
 
         if (Input.GetAxisRaw("Horizontal") > 0)
         {
+            if (!rightAnim)
+            {
+                rightAnim = true;
+            animator.SetBool("MoveRight", rightAnim);
+            }
             //transform.Translate(Vector2.right * speed);
             rb.AddForce(transform.right * speed * Input.GetAxis("Horizontal"));
         }
         else if (Input.GetAxisRaw("Horizontal") < 0)
         {
-
+          
+            if (!leftAnim)
+            {
+                leftAnim = true;
+                animator.SetBool("MoveLeft", leftAnim);
+            }
             //transform.Translate(Vector2.right * -speed);
             rb.AddForce(transform.right * speed * Input.GetAxis("Horizontal"));
+        }
+        else
+        {
+            rightAnim = false;
+            animator.SetBool("MoveRight", rightAnim);
+            leftAnim = false;
+            animator.SetBool("MoveLeft", leftAnim);
+
         }
 
         if (Input.GetAxisRaw("Vertical") > 0)
         {
+            if (!upAnim)
+            {
+                upAnim = true;
+                thrustAnimator.SetBool("MoveUp", upAnim);
+            }
             //transform.Translate(Vector2.up * speed);
             rb.AddForce(transform.up * speed * Input.GetAxis("Vertical"));
         }
         else if (Input.GetAxisRaw("Vertical") < 0)
         {
 
+            if (upAnim)
+            {
+                upAnim = false;
+                thrustAnimator.SetBool("MoveUp", upAnim);
+            }
             // transform.Translate(Vector2.up * -speed);
             rb.AddForce(transform.up * speed * Input.GetAxis("Vertical"));
+        }
+        else
+        {
+
+            if (!upAnim)
+            {
+                upAnim = true;
+                thrustAnimator.SetBool("MoveUp", upAnim);
+            }
         }
     }
 	// Update is called once per frame
@@ -193,6 +238,10 @@ public GameObject picture;
                     hurtFace.SetActive(true);
                   //  picture.GetComponent<Renderer>().enabled = false;
                     gameObject.GetComponent<Renderer>().enabled = false;
+                    foreach(Transform child in transform)
+                    {
+                        Destroy(child.gameObject);
+                    }
                     gameOver.SetActive(true);
                 }
             }
