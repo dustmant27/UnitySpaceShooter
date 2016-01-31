@@ -227,6 +227,7 @@ public GameObject picture;
                 collision.enabled = false;
                     // respawnTimer = 3f;
 
+                    GameData.GameOver = true;
                     normalFace.SetActive(false);
                     hurtFace.SetActive(true);
                     //picture.GetComponent<Renderer>().enabled = false;

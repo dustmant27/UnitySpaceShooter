@@ -51,14 +51,16 @@ public class EnemyMoveDown : MonoBehaviour {
     {
         if (coll.gameObject.tag == "MyBullet")
         {
+            var damage = coll.gameObject.GetComponent<BulletDamage>();
+
             Destroy(coll.gameObject);
-            Health -= .5f;
+            Health -= damage.Value;
             if (Health <= 0)
             {
                 audio.PlayOneShot(explosion, 1f);
                 collision.enabled = false;
                 Destroy(gameObject, explosion.length);
-                GameData.Score += pointValue;
+                GameData.AddScore(pointValue);
                 if (itemDrop != null)
                 {
                     var check = Random.Range(0F, 100.0F);

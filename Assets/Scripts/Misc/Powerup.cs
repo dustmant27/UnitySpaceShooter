@@ -28,7 +28,8 @@ public class Powerup : MonoBehaviour {
                     playerInfo.FireDelay -= .02f;
                     break;
                 case PublicVariables.PowerupType.points:
-                    GameData.Score += pointValue;
+                    
+                    GameData.AddScore(pointValue);
                     break;
             }
             Destroy(gameObject);
