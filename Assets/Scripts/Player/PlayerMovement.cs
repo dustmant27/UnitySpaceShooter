@@ -25,9 +25,27 @@ public class PlayerMovement : MonoBehaviour {
     bool dead = false;
     bool fireBoost = false;
     private PolygonCollider2D collision;
-public GameObject picture;
 
-    private float speedBoostLength= 5f;
+    private GameObject gameOver;
+    private GameObject normalFace;
+    private GameObject hurtFace;
+    private GameObject happyFace;
+
+    private float maxFaceTimer = 1f;
+    private float faceTimer = 0f;
+public GameObject picture;
+    void Awake()
+    {
+
+         gameOver = GameObject.Find("GameOver");
+        normalFace = GameObject.Find("NormalFace");
+        hurtFace = GameObject.Find("HurtFace");
+        happyFace = GameObject.Find("HappyFace");
+        gameOver.SetActive(false);
+        normalFace.SetActive(false);
+        hurtFace.SetActive(false);
+        happyFace.SetActive(false);
+    }
     // Use this for initialization
     void Start () {
 
@@ -80,17 +98,33 @@ public GameObject picture;
         {
             CurrentTime -= Time.deltaTime;
         }
+        if(faceTimer > 0)
+        {
+            faceTimer -= Time.deltaTime;
+        }
+        else
+        {
+            
+
+            normalFace.SetActive(true);
+            hurtFace.SetActive(false);
+            happyFace.SetActive(false);
+            if (GameData.GameOver)
+            {
+                hurtFace.SetActive(true);
+            }
+        }
         if(respawnTimer > 0)
         {
             respawnTimer -= Time.deltaTime;
         }
         else if(respawnTimer <= 0 && dead)
         {
-            dead = false;
-            collision.enabled = true;
-            gameObject.transform.position = respawnPoint;
-            picture.GetComponent<Renderer>().enabled = true;
-            gameObject.GetComponent<Renderer>().enabled = true;
+           // dead = false;
+           // collision.enabled = true;
+          //  gameObject.transform.position = respawnPoint;
+          //  picture.GetComponent<Renderer>().enabled = true;
+          //  gameObject.GetComponent<Renderer>().enabled = true;
         }
         if (Input.GetKey(KeyCode.Escape))
         {
@@ -100,7 +134,7 @@ public GameObject picture;
         {
             CurrentTime = FireDelay;
             audio.PlayOneShot(shoot, .15f);
-            switch (upgradeLevel)
+            switch (GameData.BeamLevel)
             {
                 case 0:
                     //single shot
@@ -110,7 +144,7 @@ public GameObject picture;
                     //double shot
                     GameObject doubBullet = Instantiate(doubleBullet, new Vector3(transform.position.x , transform.position.y + .48f), doubleBullet.transform.rotation) as GameObject;
                     break;
-                default:
+                case 2:
                     //tri shot 
                     Instantiate(triRightBullet, new Vector3(transform.position.x + .1f, transform.position.y + .25f), triRightBullet.transform.rotation);
                     Instantiate(triMidBullet, new Vector3(transform.position.x, transform.position.y + .25f), basicBullet.transform.rotation);
@@ -136,15 +170,31 @@ public GameObject picture;
         {
         if (coll.gameObject.tag != "MyBullet" && coll.gameObject.tag != "Pickup")
             {
-                audio.PlayOneShot(explosion , 0.6F);
                 Destroy(coll.gameObject);
-                dead = true;
-                collision.enabled = false; 
-                respawnTimer = 3f;
-                upgradeLevel = 0;
-                picture.GetComponent<Renderer>().enabled = false;
-                gameObject.GetComponent<Renderer>().enabled = false;
-                //Destroy(gameObject);
+                if (GameData.BeamLevel > 0)
+                {
+
+                    normalFace.SetActive(false);
+                    hurtFace.SetActive(true);
+                    happyFace.SetActive(false);
+                    faceTimer = maxFaceTimer;
+
+                    audio.PlayOneShot(explosion, 0.8F);
+                    GameData.BeamLevel--;
+                }
+                else
+                {
+                    audio.PlayOneShot(explosion, 0.8F);
+                    dead = true;
+                    collision.enabled = false;
+                    // respawnTimer = 3f;
+                    GameData.GameOver = true;
+                    normalFace.SetActive(false);
+                    hurtFace.SetActive(true);
+                  //  picture.GetComponent<Renderer>().enabled = false;
+                    gameObject.GetComponent<Renderer>().enabled = false;
+                    gameOver.SetActive(true);
+                }
             }
             if (coll.gameObject.tag == "Pickup")
             {
@@ -153,19 +203,37 @@ public GameObject picture;
                 //{
                 //    FireDelay -= .01f;
                 //}
+                normalFace.SetActive(false);
+                hurtFace.SetActive(false);
+                happyFace.SetActive(true);
+                faceTimer = maxFaceTimer;
                 audio.PlayOneShot(pickUp, 0.8F);
                 //Destroy(coll.gameObject);
             }
 
             if (coll.gameObject.tag == "EnemyBullet")
             {
-                audio.PlayOneShot(explosion, 0.8F);
+                Destroy(coll.gameObject);
+                if (GameData.BeamLevel > 0)
+                {
+
+                    audio.PlayOneShot(explosion, 0.8F);
+                    GameData.BeamLevel--;
+                }
+                else
+                {
+  audio.PlayOneShot(explosion, 0.8F);
                 dead = true;
                 collision.enabled = false;
-                respawnTimer = 3f;
-                upgradeLevel = 0;
-               picture.GetComponent<Renderer>().enabled = false;
+                    // respawnTimer = 3f;
+
+                    normalFace.SetActive(false);
+                    hurtFace.SetActive(true);
+                    //picture.GetComponent<Renderer>().enabled = false;
                 gameObject.GetComponent<Renderer>().enabled = false;
+                    gameOver.SetActive(true);
+                }
+              
                 
 
             }

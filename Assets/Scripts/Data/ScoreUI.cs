@@ -14,9 +14,9 @@ public class ScoreUI : MonoBehaviour {
 	void FixedUpdate () {
         string tempScore = GameData.Score.ToString();
         var stringLength = tempScore.Length;
-        if(stringLength != 8)
+        if(stringLength != 7)
         {
-            var diff = 8 - stringLength;
+            var diff = 7 - stringLength;
             for (int i = 0; i <= diff; i++)
                 tempScore = "0" + tempScore;
 

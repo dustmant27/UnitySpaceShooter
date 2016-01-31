@@ -22,7 +22,7 @@ public class Powerup : MonoBehaviour {
             switch (type)
             {
                 case PublicVariables.PowerupType.weapon:
-                    playerInfo.upgradeLevel++;
+                    GameData.UpgradeCurrentWeapon();
                     break;
                 case PublicVariables.PowerupType.speed:
                     playerInfo.FireDelay -= .02f;
