@@ -2,11 +2,10 @@
 using System.Collections;
 using System;
 
-[Serializable]
-public class GameData {
+public static class GameData {
 
-    public int SceneID;
-    public int Money;
-    public int Score;
+  public  static int SceneID;
+    public static int Money;
+    public static int Score;
 
 }

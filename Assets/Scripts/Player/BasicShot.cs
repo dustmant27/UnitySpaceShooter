@@ -17,15 +17,16 @@ public class BasicShot : MonoBehaviour {
     }
     void OnCollisionEnter2D(Collision2D coll)
     {
-        if (coll.gameObject.tag == "Enemy")
-        {
-           audio.PlayOneShot(explosion, 1f);
+        //if (coll.gameObject.tag == "Enemy")
+        //{
+        //    collision.enabled = false;
+        //        gameObject.GetComponent<Renderer>().enabled = false;
+        //        Destroy(gameObject, explosion.length);
 
-            gameObject.GetComponent<Renderer>().enabled = false;
-            Destroy(coll.gameObject);
-            Destroy(gameObject, explosion.length);
-           // Destroy(gameObject);
-        }
+          
+            
+        //   // Destroy(gameObject);
+        //}
 
     }
 
@@ -33,9 +34,18 @@ public class BasicShot : MonoBehaviour {
     {
         if (coll.gameObject.tag == "Enemy")
         {
-            Destroy(coll.gameObject);
-            collision.enabled = false;
-            Destroy(gameObject);
+           var enemyInfo =  coll.gameObject.GetComponent<EnemyMoveDown>();
+            if(enemyInfo.Health == 0)
+            {
+                Destroy(coll.gameObject);
+                collision.enabled = false;
+                Destroy(gameObject);
+
+            }
+            else
+            {
+                enemyInfo.Health -= 0;
+            }
         }
 
     }

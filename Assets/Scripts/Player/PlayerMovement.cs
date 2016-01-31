@@ -13,17 +13,21 @@ public class PlayerMovement : MonoBehaviour {
     public float FireDelay = .2f;
     public AudioClip pickUp;
     public AudioClip explosion;
+    public AudioClip shoot;
     AudioSource audio;
     float CurrentTime = 0f;
     private Rigidbody2D rb;
     private Vector3 respawnPoint;
 
     private GameObject basicPlayer;
-    int upgradeLevel = 0;
+    public int upgradeLevel = 0;
     private float respawnTimer = 0;
     bool dead = false;
+    bool fireBoost = false;
     private PolygonCollider2D collision;
 public GameObject picture;
+
+    private float speedBoostLength= 5f;
     // Use this for initialization
     void Start () {
 
@@ -32,6 +36,13 @@ public GameObject picture;
         respawnPoint = gameObject.transform.position;
         basicPlayer = gameObject;
         collision = GetComponent<PolygonCollider2D>();
+    }
+    public void StartFireSpeedBoost()
+    {
+        if (!fireBoost)
+        {
+
+        }
     }
 	void FixedUpdate()
     {
@@ -88,6 +99,7 @@ public GameObject picture;
         if (Input.GetButton("Fire1") && CurrentTime <= 0 && !dead)
         {
             CurrentTime = FireDelay;
+            audio.PlayOneShot(shoot, .15f);
             switch (upgradeLevel)
             {
                 case 0:
@@ -96,7 +108,7 @@ public GameObject picture;
                     break;
                 case 1:
                     //double shot
-                    GameObject doubBullet = Instantiate(doubleBullet, new Vector3(transform.position.x, transform.position.y + .48f), doubleBullet.transform.rotation) as GameObject;
+                    GameObject doubBullet = Instantiate(doubleBullet, new Vector3(transform.position.x , transform.position.y + .48f), doubleBullet.transform.rotation) as GameObject;
                     break;
                 default:
                     //tri shot 
@@ -134,16 +146,16 @@ public GameObject picture;
                 gameObject.GetComponent<Renderer>().enabled = false;
                 //Destroy(gameObject);
             }
-        if (coll.gameObject.tag == "Pickup")
+            if (coll.gameObject.tag == "Pickup")
             {
-                upgradeLevel++;
-                if(upgradeLevel > 2)
-                {
-                    FireDelay -= .01f;
-                }
-                audio.PlayOneShot(pickUp , 0.8F);
-                Destroy(coll.gameObject);
-        }
+                //upgradeLevel++;
+                //if (upgradeLevel > 2)
+                //{
+                //    FireDelay -= .01f;
+                //}
+                audio.PlayOneShot(pickUp, 0.8F);
+                //Destroy(coll.gameObject);
+            }
 
             if (coll.gameObject.tag == "EnemyBullet")
             {

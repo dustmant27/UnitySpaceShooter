@@ -19,15 +19,16 @@ public class TriShot : MonoBehaviour
     }
     void OnCollisionEnter2D(Collision2D coll)
     {
-        if (coll.gameObject.tag == "Enemy")
-        {
-            audio.PlayOneShot(explosion, 1f);
+        //if (coll.gameObject.tag == "Enemy")
+        //{
+        //    collision.enabled = false;
+        //    gameObject.GetComponent<Renderer>().enabled = false;
+        //    Destroy(gameObject, explosion.length);
 
-            gameObject.GetComponent<Renderer>().enabled = false;
-            Destroy(coll.gameObject);
-            collision.enabled = false;
-            Destroy(gameObject, explosion.length);
-        }
+
+
+        //    // Destroy(gameObject);
+        //}
 
     }
 
