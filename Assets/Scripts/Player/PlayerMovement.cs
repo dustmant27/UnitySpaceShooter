@@ -177,7 +177,7 @@ public GameObject picture;
         }
         if (Input.GetButton("Fire1") && CurrentTime <= 0 && !dead)
         {
-            CurrentTime = FireDelay;
+            CurrentTime = GameData.BeamFireSpeed;
             audio.PlayOneShot(shoot, .15f);
             switch (GameData.BeamLevel)
             {
@@ -189,7 +189,7 @@ public GameObject picture;
                     //double shot
                     GameObject doubBullet = Instantiate(doubleBullet, new Vector3(transform.position.x , transform.position.y + .48f), doubleBullet.transform.rotation) as GameObject;
                     break;
-                case 2:
+                default:
                     //tri shot 
                     Instantiate(triRightBullet, new Vector3(transform.position.x + .1f, transform.position.y + .25f), triRightBullet.transform.rotation);
                     Instantiate(triMidBullet, new Vector3(transform.position.x, transform.position.y + .25f), basicBullet.transform.rotation);

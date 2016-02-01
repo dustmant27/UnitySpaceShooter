@@ -15,13 +15,27 @@ public static class GameData {
     public static WeaponType CurrentWeapon = WeaponType.beam;
     public static int BeamLevel = 0;
     public static bool GameOver = false;
+    public static float BeamFireSpeed = 0.36f;
 
     public static void UpgradeCurrentWeapon()
     {
         switch (CurrentWeapon)
         {
             case WeaponType.beam:
+                if(BeamLevel < 2 )
                 BeamLevel++;
+                else
+                    BeamFireSpeed -= .04f; 
+                break;
+        }
+    }
+
+    public static void UpgradeFireRate()
+    {
+        switch (CurrentWeapon)
+        {
+            case WeaponType.beam:
+                BeamFireSpeed -= .04f;
                 break;
         }
     }
