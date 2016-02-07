@@ -15,8 +15,9 @@ public class PlayerMovement : MonoBehaviour {
     public AudioClip explosion;
     public AudioClip shoot;
     public int upgradeLevel = 0;
-public GameObject picture;
-
+    public GameObject picture;    
+    public bool invulnerable = false;
+    public float invulTimer = 2.0f;
 
     AudioSource audio;
      Rigidbody2D rb;
@@ -206,6 +207,14 @@ public GameObject picture;
 
 
         }
+        if (invulTimer > 0) {
+            invulTimer -= Time.deltaTime;
+        } else if (invulnerable) {
+            invulnerable = false;
+            Color thisColor = gameObject.GetComponent<Renderer>().material.color;
+            thisColor.a = 1;
+            gameObject.GetComponent<Renderer>().material.color = thisColor;
+        }
        
     }
     void OnCollisionEnter2D(Collision2D coll)
@@ -213,37 +222,10 @@ public GameObject picture;
 
         if(coll.gameObject.tag != "Border")
         {
-        if (coll.gameObject.tag != "MyBullet" && coll.gameObject.tag != "Pickup")
+        if (coll.gameObject.tag != "MyBullet" && coll.gameObject.tag != "Pickup" && !invulnerable)
             {
                 Destroy(coll.gameObject);
-                if (GameData.BeamLevel > 0)
-                {
-
-                    normalFace.SetActive(false);
-                    hurtFace.SetActive(true);
-                    happyFace.SetActive(false);
-                    faceTimer = maxFaceTimer;
-
-                    audio.PlayOneShot(explosion, 0.8F);
-                    GameData.BeamLevel--;
-                }
-                else
-                {
-                    audio.PlayOneShot(explosion, 0.8F);
-                    dead = true;
-                    collision.enabled = false;
-                    // respawnTimer = 3f;
-                    GameData.GameOver = true;
-                    normalFace.SetActive(false);
-                    hurtFace.SetActive(true);
-                  //  picture.GetComponent<Renderer>().enabled = false;
-                    gameObject.GetComponent<Renderer>().enabled = false;
-                    foreach(Transform child in transform)
-                    {
-                        Destroy(child.gameObject);
-                    }
-                    gameOver.SetActive(true);
-                }
+                TakeDamage();
             }
             if (coll.gameObject.tag == "Pickup")
             {
@@ -260,31 +242,11 @@ public GameObject picture;
                 //Destroy(coll.gameObject);
             }
 
-            if (coll.gameObject.tag == "EnemyBullet")
+            if (coll.gameObject.tag == "EnemyBullet" && !invulnerable)
             {
+
                 Destroy(coll.gameObject);
-                if (GameData.BeamLevel > 0)
-                {
-
-                    audio.PlayOneShot(explosion, 0.8F);
-                    GameData.BeamLevel--;
-                }
-                else
-                {
-  audio.PlayOneShot(explosion, 0.8F);
-                dead = true;
-                collision.enabled = false;
-                    // respawnTimer = 3f;
-
-                    GameData.GameOver = true;
-                    normalFace.SetActive(false);
-                    hurtFace.SetActive(true);
-                    //picture.GetComponent<Renderer>().enabled = false;
-                gameObject.GetComponent<Renderer>().enabled = false;
-                    gameOver.SetActive(true);
-                }
-              
-                
+                TakeDamage();
 
             }
 
@@ -302,6 +264,43 @@ public GameObject picture;
     void MovePlayer()
     {
       
+    }
+
+    void TakeDamage() {
+        if (GameData.BeamLevel > 0)
+        {
+            // Invulnerability sequence
+            Color thisColor = gameObject.GetComponent<Renderer>().material.color;
+            thisColor.a = 0.5f;
+            gameObject.GetComponent<Renderer>().material.color = thisColor;
+            invulnerable = true;
+            invulTimer = 3f;
+
+            normalFace.SetActive(false);
+            hurtFace.SetActive(true);
+            happyFace.SetActive(false);
+            faceTimer = maxFaceTimer;
+
+            audio.PlayOneShot(explosion, 0.8F);
+            GameData.BeamLevel--;
+        }
+        else
+        {
+            audio.PlayOneShot(explosion, 0.8F);
+            dead = true;
+            collision.enabled = false;
+            // respawnTimer = 3f;
+            GameData.GameOver = true;
+            normalFace.SetActive(false);
+            hurtFace.SetActive(true);
+          //  picture.GetComponent<Renderer>().enabled = false;
+            gameObject.GetComponent<Renderer>().enabled = false;
+            foreach(Transform child in transform)
+            {
+                Destroy(child.gameObject);
+            }
+            gameOver.SetActive(true);
+        }
     }
 
 }
