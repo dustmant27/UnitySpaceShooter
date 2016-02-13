@@ -33,6 +33,8 @@ public class EnemyMoveDown : MonoBehaviour {
         //speed += .0002f;
         if(basicBullet != null)
         {
+            if(transform.gameObject.layer == 9 && Health > 0)
+            {
 
         if (CurrentTime > 0)
         {
@@ -42,6 +44,8 @@ public class EnemyMoveDown : MonoBehaviour {
         {
             CurrentTime = FireDelay;
                 Instantiate(basicBullet, new Vector3(transform.position.x, transform.position.y - .2f), basicBullet.transform.rotation);
+
+            }
 
             }
         }
@@ -59,6 +63,10 @@ public class EnemyMoveDown : MonoBehaviour {
             {
                 audio.PlayOneShot(explosion, 1f);
                 collision.enabled = false;
+                foreach (Transform child in transform)
+                {
+                    Destroy(child.gameObject);
+                }
                 Destroy(gameObject, explosion.length);
                 GameData.AddScore(pointValue);
                 if (itemDrop != null)

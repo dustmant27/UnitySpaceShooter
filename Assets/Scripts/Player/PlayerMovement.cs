@@ -211,6 +211,7 @@ public class PlayerMovement : MonoBehaviour {
             invulTimer -= Time.deltaTime;
         } else if (invulnerable) {
             invulnerable = false;
+            collision.enabled = true;
             Color thisColor = gameObject.GetComponent<Renderer>().material.color;
             thisColor.a = 1;
             gameObject.GetComponent<Renderer>().material.color = thisColor;
@@ -280,6 +281,7 @@ public class PlayerMovement : MonoBehaviour {
             hurtFace.SetActive(true);
             happyFace.SetActive(false);
             faceTimer = maxFaceTimer;
+            collision.enabled = false;
 
             audio.PlayOneShot(explosion, 0.8F);
             GameData.BeamLevel--;

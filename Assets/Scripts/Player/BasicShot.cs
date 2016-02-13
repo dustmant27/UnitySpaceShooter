@@ -37,6 +37,11 @@ public class BasicShot : MonoBehaviour {
            var enemyInfo =  coll.gameObject.GetComponent<EnemyMoveDown>();
             if(enemyInfo.Health == 0)
             {
+                coll.gameObject.GetComponent<Renderer>().enabled = false;
+                foreach (Transform child in coll.transform)
+                {
+                    Destroy(child.gameObject);
+                }
                 Destroy(coll.gameObject);
                 collision.enabled = false;
                 Destroy(gameObject);
